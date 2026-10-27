@@ -1,0 +1,137 @@
+import turtle
+import time
+import random
+
+# CONSTANTS 
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 600
+GAME_SPEED = 0.15
+
+BLACK = (0, 0, 0)
+GREEN = (0, 102, 51)
+LIGHT_GREEN = (204, 255, 204)
+RED = (153, 0 , 0)
+
+# --- VARIABLES (Data that can change) ---
+score = 0
+game_is_running = True
+
+# --- SCREEN SETUP ---
+window = turtle.Screen()
+window.title("My First Snake Game")
+window.bgcolor(BLACK)
+window.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+window.tracer(0)
+
+# --- GAME OBJECTS (Sprites) ---
+# Snake head
+head = turtle.Turtle()
+head.shape("square")
+head.color(RED)
+head.penup()
+head.goto(0, 0)
+head.direction = "stop"
+
+# Food
+food = turtle.Turtle()
+food.shape("circle")
+food.color(GREEN)
+food.penup()
+food.goto(0, 100)
+
+# --- LIST (To store body segments) ---
+body_segments = []
+
+# --- FUNCTIONS (Actions) ---
+def go_up():
+    if head.direction != "down":
+        head.direction = "up"
+
+def go_down():
+    if head.direction != "up":
+        head.direction = "down"
+
+def go_left():
+    if head.direction != "right":
+        head.direction = "left"
+
+def go_right():
+    if head.direction != "left":
+        head.direction = "right"
+
+def move_snake():
+    if head.direction == "up":
+        head.sety(head.ycor() + 20)
+    if head.direction == "down":
+        head.sety(head.ycor() - 20)
+    if head.direction == "left":
+        head.setx(head.xcor() - 20)
+    if head.direction == "right":
+        head.setx(head.xcor() + 20)
+
+def reset_game():
+    global score
+    time.sleep(1)
+    head.goto(0, 0)
+    head.direction = "stop"
+    
+    # Clear the list and remove body from screen
+    for segment in body_segments:
+        segment.goto(1000, 1000)
+    body_segments.clear()
+    
+    score = 0
+    print("Game Over! Score reset to 0")
+
+# --- KEYBOARD BINDINGS ---
+window.listen()
+window.onkeypress(go_up, "Up")
+window.onkeypress(go_down, "Down")
+window.onkeypress(go_left, "Left")
+window.onkeypress(go_right, "Right")
+
+# --- MAIN LOOP ---
+while game_is_running:
+    window.update()
+
+    # 1. Check wall collisions
+    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
+        reset_game()
+
+    # 2. Check food collision (Snake eats food)
+    if head.distance(food) < 20:
+        # Move food to a random position
+        random_x = random.randint(-280, 280)
+        random_y = random.randint(-280, 280)
+        food.goto(random_x, random_y)
+        
+        # Create a new segment and add it to the LIST
+        new_segment = turtle.Turtle()
+        new_segment.shape("square")
+        new_segment.color(LIGHT_GREEN)
+        new_segment.penup()
+        body_segments.append(new_segment)
+        
+        # Update variable
+        score += 1
+        print("Score:", score)
+
+    # 3. Move the body segments (Reverse loop)
+    for index in range(len(body_segments) - 1, 0, -1):
+        x = body_segments[index - 1].xcor()
+        y = body_segments[index - 1].ycor()
+        body_segments[index].goto(x, y)
+        
+    # Move segment 0 to the head
+    if len(body_segments) > 0:
+        body_segments[0].goto(head.xcor(), head.ycor())
+
+    # 4. Move the head
+    move_snake()
+
+    # 5. Check body collisions
+    for segment in body_segments:
+        if segment.distance(head) < 20:
+            reset_game()
+
+    time.sleep(GAME_SPEED)
