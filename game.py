@@ -77,7 +77,7 @@ while running:
     else:
         # The snake goes on normally, we just delete the last segment
         snake_segments.pop()
-   
+
 
     # 4. Affichage (Dessin)
     screen.fill(BLACK)  # Fond noir
