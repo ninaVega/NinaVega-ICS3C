@@ -6,7 +6,7 @@ SCREEN_HEIGHT = 400
 
 # Initialize Pygame
 pygame.init()
-pygame.mixer.init()
+pygame.mixer.init() 
 
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -17,13 +17,14 @@ CELL_SIZE = 30  # Each grid square will be 30x30 pixels
 # Set up colours
 WHITE = (255, 255, 255)
 BLUE = (51, 153, 255) 
-RED = (153, 0, 0) 
+RED = (204, 0, 0) 
 DARK_GREEN = (34, 139, 34)  # The grass
 YELLOW = (255, 220, 0)
 BLACK = (0, 0, 0)
 SKY_BLUE = (135, 206, 235)  # The sky
+BROWN = (102, 51, 0)
 
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font(None, 36) # Creating font sizes for displaying
 small_font = pygame.font.Font(None, 25)
 
 # Set up the player
@@ -34,35 +35,35 @@ basket_height = 30
 basket_speed = 8
 
 # lists that store the falling apples and power-ups
-apples = []
-power_ups = []
+apples = [] # Stores all falling apples
+power_ups = [] # Stoes all falling stars
 
 # Game Variables
-score = 0
-lives = 3
-level = 1
-game_state = "menu"
-frame_count = 0
+score = 0 # Number of apples caught
+lives = 3 # Number of chances remaining
+level = 1 # Difficulty level, the apples fall faster
+game_state = "menu" # To determine which screen is being displayed
+frame_count = 0 # Counts how manyframes hasve passed
 
 # Set up the game
-clock = pygame.time.Clock()
-running = True
-pygame.mixer.music.load("mario_basic_sound.mp3")
-pygame.mixer.music.play()
+clock = pygame.time.Clock() # Control the rate at which frames change
+running = True # Keeps the game looping
+pygame.mixer.music.load("mario_basic_sound.mp3") # load the music in the background
+pygame.mixer.music.play()# to actually play the music
 
 # Function 1: Choose random position
-def new_position():
+def new_position(): # the apples and stars appear at random positions, always aligned with the grid
     """Choose a random horizontal position on the grid"""
     return random.randint(0, (SCREEN_WIDTH - CELL_SIZE) // CELL_SIZE) * CELL_SIZE
 
 # Function 2 ; Reset the game
 def reset_game():
     """Reset the player, score, lives and falling object"""
-    global basket_x, apples, power_ups
+    global basket_x, apples, power_ups # to change the variables we created out of the function
     global score, lives, level, frame_count, game_state
 
     basket_x = 270
-    apples = []
+    apples = [] # list back to not having anything
     power_ups = []
     score = 0
     lives = 3
@@ -74,11 +75,11 @@ def reset_game():
 # Function 3: Display the text
 def draw_text(message, x, y, colour, text_font):
     """Display a message at chosen position"""
-    text = text_font.render(message, True, colour)
-    screen.blit(text, (x, y))
+    text = text_font.render(message, True, colour) # for the text to be displayed in pygame
+    screen.blit(text, (x, y)) # place the text on the screen, x/y determine the position
 
 #  Function 4: Draw a cloud
-def draw_cloud(x, y):
+def draw_cloud(x, y): # Creating a cloud that overlaps 3 cirles
     """Draw a cloud that is 3 cirlcles close together"""
     pygame.draw.circle(screen, WHITE, (x, y), 25)
     pygame.draw.circle(screen, WHITE, (x + 25, y - 5), 35)
@@ -87,50 +88,54 @@ def draw_cloud(x, y):
 # Function 5:Draw a star for the power-up
 def draw_pygame_star(x, y, num_points, outer_radius, inner_radius, color):
     """Draw a star with math propreties in pygame"""
-    points = []
-    for i in range(num_points * 2):
+    points = [] # Empty list to store the points of the stars
+    for i in range(num_points * 2): #creating both inner and outer points
         radius = outer_radius if i % 2 == 0 else inner_radius
         angle = i * math.pi / num_points - math.pi / 2  # aligns the point facing up
-        pt_x = x + math.cos(angle) * radius
-        pt_y = y + math.sin(angle) * radius
-        points.append((pt_x, pt_y))
+        pt_x = x + math.cos(angle) * radius #horizontal coordinates
+        pt_y = y + math.sin(angle) * radius # vertical coordinates
+        points.append((pt_x, pt_y)) # adds all the coordinates to the list
     pygame.draw.polygon(screen, color, points)
 
+# MAIN LOOP -
 while running: 
     
     # 1. Handling events and keyboard input
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pygame.event.get(): #Checks for events (keys being pressed)
+        if event.type == pygame.QUIT: # The game stops when screen in closed
             running = False
       
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+        if event.type == pygame.KEYDOWN:# Check a key being pressed
+            if event.key == pygame.K_ESCAPE: # the escape key closes the game
                 running = False
             
-            if event.key == pygame.K_SPACE:
-                if game_state == "menu" or game_state == "gameover":
+            if event.key == pygame.K_SPACE: # the space key starts a new game
+                if game_state == "menu" or game_state == "gameover": # From menu or second chance
                     reset_game()
 
     # Get the keys being pressed
-    keys = pygame.key.get_pressed()
+    keys = pygame.key.get_pressed() # check what key is currently being pressed
 
     if game_state == "playing":
         frame_count += 1
 
         # Move the basket
-        if keys[pygame.K_LEFT]:
-            basket_x -= basket_speed
-        if keys[pygame.K_RIGHT]:
-            basket_x += basket_speed
+        if keys[pygame.K_LEFT]: # left arrow moves backet to left
+            basket_x -= basket_speed # subtracts from the position
+        if keys[pygame.K_RIGHT]: # right arrow moves the backet to the right
+            basket_x += basket_speed # adds to the posiotion
 
         # Keep basket inside of the screen 
         basket_x = max(0, min(basket_x, SCREEN_WIDTH - basket_width))
-
+                   # max()to not go too far on the lft
+                   # min() prevents from going too far on the right
+        
         # basket_rect being defined before checking collisions
         basket_rect = pygame.Rect(basket_x, basket_y, basket_width, basket_height)
-
+                   # invisible rectangle around basket as 'shield'
+        
         # Apples 
-        if frame_count % max(15, 45 - level * 3) == 0:
+        if frame_count % max(15, 45 - level * 3) == 0: #
             apples.append([new_position(), 0])
 
         # occasional power-up
@@ -192,7 +197,7 @@ while running:
 
     elif game_state == "playing":
         # Draw the basket
-        pygame.draw.rect(screen, BLUE, (basket_x, basket_y, basket_width, basket_height))
+        pygame.draw.rect(screen, BROWN, (basket_x, basket_y, basket_width, basket_height))
 
         # Draw apples
         for apple in apples:
