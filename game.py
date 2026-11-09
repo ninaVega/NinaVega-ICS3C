@@ -48,8 +48,12 @@ frame_count = 0 # Counts how manyframes hasve passed
 # Set up the game
 clock = pygame.time.Clock() # Control the rate at which frames change
 running = True # Keeps the game looping
+
+# Set up the music
 pygame.mixer.music.load("mario_basic_sound.mp3") # load the music in the background
-pygame.mixer.music.play()# to actually play the music
+
+power_up_sound = pygame.mixer.Sound("mario_power-up_sound.mp3")
+game_over_sound = pygame.mixer.Sound("game_over_sound.mp3")
 
 # Function 1: Choose random position
 def new_position(): # the apples and stars appear at random positions, always aligned with the grid
@@ -71,6 +75,7 @@ def reset_game():
     frame_count = 0  
     game_state = "playing"
 
+    pygame.mixer.music.play(-1)
 
 # Function 3: Display the text
 def draw_text(message, x, y, colour, text_font):
@@ -128,7 +133,7 @@ while running:
         # Keep basket inside of the screen 
         basket_x = max(0, min(basket_x, SCREEN_WIDTH - basket_width))
                    # max()to not go too far on the lft
-                   # min() prevents from going too far on the right
+                   # min() prevents from going too far to the right
         
         # basket_rect being defined before checking collisions
         basket_rect = pygame.Rect(basket_x, basket_y, basket_width, basket_height)
@@ -162,18 +167,21 @@ while running:
             power_up[1] += 3
 
             power_rect = pygame.Rect(power_up[0], power_up[1], CELL_SIZE, CELL_SIZE)
-            #pygame.mixer.music.load(mario_power-up_sound.mp3)
+            
 
             if basket_rect.colliderect(power_rect):
                 power_ups.remove(power_up)
                 lives = min(lives + 1, 5)
-
+                power_up_sound.play()
             elif power_up[1] > SCREEN_HEIGHT:
                 power_ups.remove(power_up)
     
         # Check game over
         if lives <= 0:
             game_state = "gameover"
+            pygame.mixer.music.stop()
+            game_over_sound.play()
+
     
     # 3. Draw everything
     screen.fill(SKY_BLUE)
@@ -229,6 +237,6 @@ while running:
         draw_text("Press SPACE to play again", 195, 220, YELLOW, small_font)
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(40)
 
 pygame.quit()
