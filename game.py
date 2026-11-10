@@ -237,6 +237,6 @@ while running:
         draw_text("Press SPACE to play again", 195, 220, YELLOW, small_font)
 
     pygame.display.flip()
-    clock.tick(40)
+    clock.tick(30)
 
 pygame.quit()
