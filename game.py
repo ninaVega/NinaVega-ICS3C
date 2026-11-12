@@ -57,12 +57,30 @@ game_over_sound = pygame.mixer.Sound("game_over_sound.mp3")
 
 # Function 1: Choose random position
 def new_position(): # the apples and stars appear at random positions, always aligned with the grid
-    """Choose a random horizontal position on the grid"""
+    """
+    -------------------------------------------------------
+    Choose a random horizontal position on the grid
+    -------------------------------------------------------
+    Parameters:
+       new_position - gives new poistion to falling elements
+    Returns:
+       [return value name - return value description (return value type)]
+    -------------------------------------------------------
+    """
     return random.randint(0, (SCREEN_WIDTH - CELL_SIZE) // CELL_SIZE) * CELL_SIZE
 
 # Function 2 ; Reset the game
 def reset_game():
-    """Reset the player, score, lives and falling object"""
+    """
+    -------------------------------------------------------
+    Reset the player, score, lives and falling object
+    -------------------------------------------------------
+    Parameters:
+       reset_game - parameter description (parameter type and constraints)]
+    Returns:
+       [return value name - return value description (return value type)]
+    -------------------------------------------------------
+    """
     global basket_x, apples, power_ups # to change the variables we created out of the function
     global score, lives, level, frame_count, game_state
 
@@ -79,20 +97,47 @@ def reset_game():
 
 # Function 3: Display the text
 def draw_text(message, x, y, colour, text_font):
-    """Display a message at chosen position"""
+    """
+    -------------------------------------------------------
+    Display a message at chosen position
+    -------------------------------------------------------
+    Parameters:
+       [parameter name - parameter description (parameter type and constraints)]
+    Returns:
+       [return value name - return value description (return value type)]
+    -------------------------------------------------------
+    """
     text = text_font.render(message, True, colour) # for the text to be displayed in pygame
     screen.blit(text, (x, y)) # place the text on the screen, x/y determine the position
 
 #  Function 4: Draw a cloud
 def draw_cloud(x, y): # Creating a cloud that overlaps 3 cirles
-    """Draw a cloud that is 3 cirlcles close together"""
+    """
+    -------------------------------------------------------
+    Draw a cloud that is 3 cirlcles close together
+    -------------------------------------------------------
+    Parameters:
+       [parameter name - parameter description (parameter type and constraints)]
+    Returns:
+       [return value name - return value description (return value type)]
+    -------------------------------------------------------
+    """
     pygame.draw.circle(screen, WHITE, (x, y), 25)
     pygame.draw.circle(screen, WHITE, (x + 25, y - 5), 35)
     pygame.draw.circle(screen, WHITE, (x + 50, y), 25)
 
 # Function 5:Draw a star for the power-up
 def draw_pygame_star(x, y, num_points, outer_radius, inner_radius, color):
-    """Draw a star with math propreties in pygame"""
+    """
+    -------------------------------------------------------
+    Draw a star with math propreties in pygame
+    -------------------------------------------------------
+    Parameters:
+       [parameter name - parameter description (parameter type and constraints)]
+    Returns:
+       [return value name - return value description (return value type)]
+    -------------------------------------------------------
+    """
     points = [] # Empty list to store the points of the stars
     for i in range(num_points * 2): #creating both inner and outer points
         radius = outer_radius if i % 2 == 0 else inner_radius
@@ -197,7 +242,7 @@ while running:
         menu_bg = pygame.Surface((400, 180))
         menu_bg.set_alpha(150)
         menu_bg.fill(BLACK)
-        screen.blit(menu_bg, (100, 100))
+        screen.blit(menu_bg, (100, 100)) # Surface to display banner
 
         draw_text("CATCH THE APPLES!", 180, 120, WHITE, font)
         draw_text("Press SPACE to start", 220, 190, YELLOW, small_font)
