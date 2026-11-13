@@ -32,22 +32,22 @@ basket_x = 270
 basket_y = 340
 basket_width = 90
 basket_height = 30
-basket_speed = 8
+basket_speed = 8 # How many pixels the basket mooves each time
 
 # lists that store the falling apples and power-ups
 apples = [] # Stores all falling apples
 power_ups = [] # Stoes all falling stars
 
 # Game Variables
-score = 0 # Number of apples caught
-lives = 3 # Number of chances remaining
+score = 0 # Number of apples caught, players score
+lives = 3 # Number of chances remaining, players lives
 level = 1 # Difficulty level, the apples fall faster
 game_state = "menu" # To determine which screen is being displayed
-frame_count = 0 # Counts how manyframes hasve passed
+frame_count = 0 # Counts how manyframes have passed
 
 # Set up the game
 clock = pygame.time.Clock() # Control the rate at which frames change
-running = True # Keeps the game looping
+running = True # Keeps the game looping/ running
 
 # Set up the music
 pygame.mixer.music.load("mario_basic_sound.mp3") # load the music in the background
@@ -167,7 +167,7 @@ while running:
     keys = pygame.key.get_pressed() # check what key is currently being pressed
 
     if game_state == "playing":
-        frame_count += 1
+        frame_count += 1 # Every time the loop repeats, it adds one to the frame count
 
         # Move the basket
         if keys[pygame.K_LEFT]: # left arrow moves backet to left
